@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中古マンション価格トラッカー</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>中古マンション価格トラッカー</h1>
+            <p class="disclaimer">このサービスは、国土交通省不動産情報ライブラリのAPI機能を使用していますが、提供情報の最新性、正確性、完全性等が保証されたものではありません。</p>
+        </header>
+
+        <main>
+            <section class="search-section">
+                <h2>地域選択</h2>
+                <div class="search-controls">
+                    <select id="prefectureSelect" class="form-control">
+                        <option value="">都道府県を選択</option>
+                    </select>
+                    <select id="citySelect" class="form-control" disabled>
+                        <option value="">市区町村を選択</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="data-fetch-section">
+                <h2>データ取得・表示</h2>
+                <div class="fetch-controls">
+                    <button id="fetchButton" class="btn btn-primary">データ取得・表示</button>
+                </div>
+                <div id="fetchStatus" class="status-message"></div>
+                <div id="progressContainer" class="progress-container" style="display: none;">
+                    <div class="progress-bar">
+                        <div id="progressBar" class="progress-fill"></div>
+                    </div>
+                    <div id="progressText" class="progress-text"></div>
+                </div>
+            </section>
+
+            <section class="filter-section">
+                <h2>データフィルター</h2>
+                <div class="filter-controls">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="startDateFilter">開始年月</label>
+                            <input type="month" id="startDateFilter" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="endDateFilter">終了年月</label>
+                            <input type="month" id="endDateFilter" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="floorPlanFilter">間取り</label>
+                            <select id="floorPlanFilter" class="form-control">
+                                <option value="">すべて</option>
+                                <option value="１Ｒ">１Ｒ</option>
+                                <option value="１Ｋ">１Ｋ</option>
+                                <option value="１ＤＫ">１ＤＫ</option>
+                                <option value="１ＬＤＫ">１ＬＤＫ</option>
+                                <option value="２ＤＫ">２ＤＫ</option>
+                                <option value="２ＬＤＫ">２ＬＤＫ</option>
+                                <option value="３ＤＫ">３ＤＫ</option>
+                                <option value="３ＬＤＫ">３ＬＤＫ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="minPriceFilter">最低価格（万円）</label>
+                            <input type="number" id="minPriceFilter" placeholder="例: 1000" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="maxPriceFilter">最高価格（万円）</label>
+                            <input type="number" id="maxPriceFilter" placeholder="例: 5000" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="minAreaFilter">最小面積（㎡）</label>
+                            <input type="number" id="minAreaFilter" placeholder="例: 20" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="maxAreaFilter">最大面積（㎡）</label>
+                            <input type="number" id="maxAreaFilter" placeholder="例: 100" class="form-control">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="minBuildingYearFilter">築年（新）</label>
+                            <input type="number" id="minBuildingYearFilter" placeholder="例: 2000" min="1970" max="2024" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="maxBuildingYearFilter">築年（古）</label>
+                            <input type="number" id="maxBuildingYearFilter" placeholder="例: 2020" min="1970" max="2024" class="form-control">
+                        </div>
+                        <div class="filter-group">
+                            <label for="structureFilter">構造</label>
+                            <select id="structureFilter" class="form-control">
+                                <option value="">すべて</option>
+                                <option value="ＲＣ">ＲＣ（鉄筋コンクリート）</option>
+                                <option value="ＳＲＣ">ＳＲＣ（鉄骨鉄筋コンクリート）</option>
+                                <option value="Ｓ">Ｓ（鉄骨）</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button id="applyFiltersButton" class="btn btn-primary">フィルター適用</button>
+                            <button id="clearFiltersButton" class="btn btn-secondary">クリア</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="chart-section">
+                <h2>価格推移グラフ</h2>
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <h2>物件データ</h2>
+                <div id="dataTable" class="data-table"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
